@@ -15,6 +15,30 @@ Client::Client(int id_, int age_, string uf_, string paymentMethod_, int x, int 
   localization = Localization(x, y);
 }
 
+// Add store on storesPreferred list
+void Client::addStore(Store store){
+
+  if(storesPreferred.empty()){
+    storesPreferred.push_back(store);
+  } else {
+    std::vector<Store>::iterator it;
+    int i = 0;
+    int insert = 0;
+    for(it = storesPreferred.begin(); it != storesPreferred.end(); it++){
+      if(storesPreferred[i].localization.distance(localization) > store.localization.distance(localization) ||
+         (storesPreferred[i].localization.distance(localization) == store.localization.distance(localization) && storesPreferred[i].id > store.id)){
+        insert = 1;
+        storesPreferred.insert(it, store);
+        return;
+      }
+      i++;
+    }
+    if(insert == 0){
+      storesPreferred.push_back(store);
+    }
+  } 
+}
+
 // Get client payment method score
 int Client::paymentMethodScore(){
   if(paymentMethod == "DINHEIRO"){
@@ -36,6 +60,11 @@ void Client::print(){
   cout << "Payment Method: " << paymentMethod << endl;
   cout << "Ticket: " << ticket() << endl;
   localization.print();
+  cout << "Stores preferred: [ ";
+  for(int i = 0; i < storesPreferred.size(); i++){
+    cout << storesPreferred[i].id << " ";
+  }
+  cout << "]" << endl;
   cout << endl;
 }
 

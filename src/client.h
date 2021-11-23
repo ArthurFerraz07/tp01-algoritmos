@@ -4,6 +4,7 @@
 // Project libraries
 #include "untils.h"
 #include "localization.h"
+#include "store.h"
 
 using namespace std;
 
@@ -12,13 +13,18 @@ class Client {
   int id, age;
   string uf, paymentMethod;
   Localization localization;
+  vector<Store> storesPreferred;
   
   Client();
   Client(int id_, int age_, string uf_, string paymentMethod_, int x, int y);
-  int paymentMethodScore();
+
+  void addStore(Store store);
   void print();
-  float ticket();
+
+  int paymentMethodScore();
   int ufScore();
+
+  float ticket();
 };
 
 #endif

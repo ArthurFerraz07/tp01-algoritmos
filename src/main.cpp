@@ -5,6 +5,28 @@
 
 using namespace std;
 
+void addClient(vector<Client> &clients, Client client ) {
+  if(clients.empty()) {
+    clients.push_back(client);
+  } else {
+    std::vector<Client>::iterator it;
+    int i = 0;
+    int insert = 0;
+    for(it = clients.begin(); it != clients.end(); it++){
+      if(clients[i].ticket() > client.ticket() ||
+         (clients[i].ticket() == client.ticket() && clients[i].id > client.id)){
+        insert = 1;
+        clients.insert(it, client);
+        return;
+      }
+      i++;
+    }
+    if(insert == 0){
+      clients.push_back(client);
+    }
+  }
+}
+
 int main(){
   // Read grid info
   int gridH, gridW;
@@ -43,7 +65,15 @@ int main(){
 
     cin >> clientAge >> clientUf >> clientPaymentMethod >> clientX >> clientY;
 
-    clients.push_back(Client(clientId, clientAge, clientUf, clientPaymentMethod, clientX, clientY));
+    Client current_client;
+
+    current_client = Client(clientId, clientAge, clientUf, clientPaymentMethod, clientX, clientY);
+
+    for(int i = 0; i < storeCount; i++){
+      current_client.addStore(stores[i]);
+    }
+
+    addClient(clients, current_client);
   }
 
   // Print scenario info
