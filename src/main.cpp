@@ -40,7 +40,7 @@ int main(){
   vector<Store> stores;
   for(int i = 0; i < storeCount; i++){
     int storeId, storeStock, storeX, storeY;
-    storeId = i + 1;
+    storeId = i;
 
     cin >> storeStock >> storeX >> storeY;
 
@@ -61,7 +61,7 @@ int main(){
   for(int i = 0; i < clientCount; i++){
     int clientId, clientAge, clientX, clientY;
     string clientUf, clientPaymentMethod;
-    clientId = i + 1;
+    clientId = i;
 
     cin >> clientAge >> clientUf >> clientPaymentMethod >> clientX >> clientY;
 
@@ -76,9 +76,21 @@ int main(){
     addClient(clients, current_client);
   }
 
+  // For each client, attempt to schedule a visit
+  for(int i = clientCount; i > 0; --i){
+    for(int j = 0; j < clients[i].storesPreferred.size(); j++){
+      clients[i].attemptSchedule(clients[i].storesPreferred[j]);
+    }
+  }
+
+  // // Print scenario info
+  // for(int i = 0; i < clientCount; i++){
+  //   clients[i].print();
+  // }
+
   // Print scenario info
-  for(int i = 0; i < clientCount; i++){
-    clients[i].print();
+  for(int i = 0; i < storeCount; i++){
+    stores[i].print();
   }
 
   return 0;

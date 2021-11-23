@@ -11,14 +11,17 @@ using namespace std;
 class Client {
   public:
   int id, age;
+  bool isActive;
   string uf, paymentMethod;
   Localization localization;
   vector<Store> storesPreferred;
+  Store scheduledStore;
   
   Client();
   Client(int id_, int age_, string uf_, string paymentMethod_, int x, int y);
 
   void addStore(Store store);
+  void attemptSchedule(Store store);
   void print();
 
   int paymentMethodScore();

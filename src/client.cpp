@@ -13,6 +13,7 @@ Client::Client(int id_, int age_, string uf_, string paymentMethod_, int x, int 
   uf = uf_;
   paymentMethod = paymentMethod_;
   localization = Localization(x, y);
+  isActive = true;
 }
 
 // Add store on storesPreferred list
@@ -39,6 +40,20 @@ void Client::addStore(Store store){
   } 
 }
 
+// attempt to schedule a visit to a store
+void Client::attemptSchedule(Store store){
+  if(!store.hasStock()){
+    cout << "FUDEU";
+    return;
+  }
+
+  if(!scheduledStore.isActive){
+    cout << "DEU BOM" << id << endl;
+    scheduledStore = store;
+    scheduledStore.pushClientId(id);
+  }
+}
+
 // Get client payment method score
 int Client::paymentMethodScore(){
   if(paymentMethod == "DINHEIRO"){
@@ -48,7 +63,7 @@ int Client::paymentMethodScore(){
   } else if(paymentMethod == "CREDITO"){
     return 3;
   } else {
-    throw invalid_argument("Invalid UF");
+    throw invalid_argument("Invalid payment method");
   }
 }
 
@@ -59,6 +74,8 @@ void Client::print(){
   cout << "UF: " << uf << endl;
   cout << "Payment Method: " << paymentMethod << endl;
   cout << "Ticket: " << ticket() << endl;
+  cout << "Active: " << isActive << endl;
+  cout << "Scheduled Store: " << scheduledStore.id << endl;
   localization.print();
   cout << "Stores preferred: [ ";
   for(int i = 0; i < storesPreferred.size(); i++){
