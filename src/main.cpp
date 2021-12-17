@@ -13,8 +13,8 @@ void addClient(vector<Client> &clients, Client client ) {
     int i = 0;
     int insert = 0;
     for(it = clients.begin(); it != clients.end(); it++){
-      if(clients[i].ticket() > client.ticket() ||
-         (clients[i].ticket() == client.ticket() && clients[i].id > client.id)){
+      if(clients[i].ticket() < client.ticket() ||
+         (clients[i].ticket() == client.ticket() && clients[i].id < client.id)){
         insert = 1;
         clients.insert(it, client);
         return;
@@ -25,6 +25,15 @@ void addClient(vector<Client> &clients, Client client ) {
       clients.push_back(client);
     }
   }
+}
+
+bool anyClientWithoutSchedule(vector<Client> &clients) {
+  for(int i = 0; i < clients.size(); i++){
+    if(clients[i].scheduledStoreId == -1){
+      return true;
+    }
+  }
+  return false;
 }
 
 int main(){
@@ -44,7 +53,7 @@ int main(){
 
     cin >> storeStock >> storeX >> storeY;
 
-    stores.push_back(Store(storeId, storeStock, storeX, storeY));
+    stores.push_back(Store(storeId, storeId, storeStock, storeX, storeY));
   }
 
   // // Print scenario info
@@ -67,26 +76,43 @@ int main(){
 
     Client current_client;
 
-    current_client = Client(clientId, clientAge, clientUf, clientPaymentMethod, clientX, clientY);
-
-    for(int i = 0; i < storeCount; i++){
-      current_client.addStore(stores[i]);
-    }
+    current_client = Client(clientId, 0, clientAge, clientUf, clientPaymentMethod, clientX, clientY);
 
     addClient(clients, current_client);
   }
 
-  // For each client, attempt to schedule a visit
-  for(int i = clientCount; i > 0; --i){
-    for(int j = 0; j < clients[i].storesPreferred.size(); j++){
-      clients[i].attemptSchedule(clients[i].storesPreferred[j]);
+  // For each store, order clients by prererence
+  for(int i = 0; i < storeCount; i++){
+    for(int j = 0; j < clientCount; j++){
+      clients[j].index = j;
+      stores[i].addClient(clients[j]);
     }
   }
 
-  // // Print scenario info
-  // for(int i = 0; i < clientCount; i++){
-  //   clients[i].print();
+    for(int i = 0; i < storeCount; i++){
+    // stores[i].print();
+  }
+
+
+  // For each store, attempt to schedule a visit with each client
+  // while(anyClientWithoutSchedule(clients)){
+    for(int i = 0; i < storeCount; i++){
+      for(int j = 0; j < stores[i].clientsPreferred.size(); j++){
+        stores[i].attemptSchedule(stores, clients[stores[i].clientsPreferred[j].index]);
+      }
+    }
   // }
+
+  // for(int i = 0; i < clientCount; i++){
+  //   for(int k = 0; k < clients[i].storesPreferred.size(); k++){
+  //     clients[i].attemptSchedule(stores[clients[i].storesPreferred[k].id]);
+  //   }
+  // }
+
+  // Print scenario info
+  for(int i = 0; i < clientCount; i++){
+    // clients[i].print();
+  }
 
   // Print scenario info
   for(int i = 0; i < storeCount; i++){
